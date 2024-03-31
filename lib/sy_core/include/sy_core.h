@@ -41,7 +41,7 @@ namespace SyringeCore {
     class Hook : public InjectionAbs {
     public:
         u32 branch;             // branch to our hook / replacement
-        Trampoline* trampoline; // trampline to facilitate calling original function
+        Trampoline* trampoline; // trampoline to facilitate calling original function
     };
 
     class InlineHook : public InjectionAbs {
