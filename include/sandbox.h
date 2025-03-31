@@ -1,4 +1,5 @@
-namespace Sandbox {
-    void Init();
+namespace Sandbox
+{
+    void Init(CoreApi *api);
     void Destroy();
 }

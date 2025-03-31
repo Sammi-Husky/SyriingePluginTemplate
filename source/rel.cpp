@@ -7,11 +7,10 @@
 namespace Syringe
 {
     const PluginMeta META = {
-        "Sandbox",                // Plugin name
-        "Sammi",                  // Author
-        Version("0.1.0"),         // Plugin version
-        Version(SYRINGE_VERSION), // Syringe version
-        Sandbox::Init             // Plugin main function
+        "Sandbox",               // Plugin name
+        "Sammi",                 // Author
+        Version("0.1.0"),        // Plugin version
+        Version(SYRINGE_VERSION) // Syringe version
     };
 
     extern "C"
@@ -20,18 +19,17 @@ namespace Syringe
         __attribute__((section(".ctors"))) extern PFN_voidfunc _ctors[];
         __attribute__((section(".ctors"))) extern PFN_voidfunc _dtors[];
 
-        const PluginMeta *_prolog();
+        const PluginMeta *_prolog(CoreApi *api);
         void _epilog();
         void _unresolved();
     }
 
     /**
-     * @brief Prolog function that runs before the plugin main function.
-     * This function is called when the plugin is loaded. It runs all global constructors
-     * @note Plugins should not use this function to run any code. It is only for running global constructors and returning the plugin meta data.
+     * @brief Main entrypoint for the plugin. This function is called when the plugin is loaded.
+     * @param api Pointer to the CoreApi interface. This is used to call core functions.
      * @return Pointer to the plugin meta data structure.
      */
-    const PluginMeta *_prolog()
+    const PluginMeta *_prolog(CoreApi *api)
     {
         // Run global constructors
         PFN_voidfunc *ctor;
@@ -39,6 +37,9 @@ namespace Syringe
         {
             (*ctor)();
         }
+
+        // Run our main plugin code
+        Sandbox::Init(api);
 
         return &META;
     }

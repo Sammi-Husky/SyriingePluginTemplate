@@ -8,9 +8,9 @@ namespace Sandbox
         OSReport("Hello world.\n");
     }
 
-    void Init()
+    void Init(CoreApi *api)
     {
-        SyringeCore::syInlineHook(0x800177B0, (void *)helloWorld);
+        api->syInlineHook(0x800177B0, reinterpret_cast<void *>(helloWorld));
     }
     void Destroy()
     {
