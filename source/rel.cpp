@@ -7,11 +7,12 @@
 namespace Syringe
 {
     const PluginMeta META = {
-        "Sandbox",
-        "Sammi",
-        Version("0.1.0"),
-        Version(SYRINGE_VERSION),
-        Sandbox::Init};
+        "Sandbox",                // Plugin name
+        "Sammi",                  // Author
+        Version("0.1.0"),         // Plugin version
+        Version(SYRINGE_VERSION), // Syringe version
+        Sandbox::Init             // Plugin main function
+    };
 
     extern "C"
     {
@@ -24,6 +25,12 @@ namespace Syringe
         void _unresolved();
     }
 
+    /**
+     * @brief Prolog function that runs before the plugin main function.
+     * This function is called when the plugin is loaded. It runs all global constructors
+     * @note Plugins should not use this function to run any code. It is only for running global constructors and returning the plugin meta data.
+     * @return Pointer to the plugin meta data structure.
+     */
     const PluginMeta *_prolog()
     {
         // Run global constructors
@@ -36,6 +43,10 @@ namespace Syringe
         return &META;
     }
 
+    /**
+     * @brief Epilog function that runs after the plugin main function.
+     * This function is called when the plugin is unloaded. It runs all global destructors
+     */
     void _epilog()
     {
         // run the global destructors
@@ -46,6 +57,10 @@ namespace Syringe
         }
     }
 
+    /**
+     * Unresolved function that usually runs when an undefined reference is attampted to be resolved.
+     * @note This function is not called by the plugin loader, but is here for future use.
+     */
     void _unresolved(void)
     {
     }
