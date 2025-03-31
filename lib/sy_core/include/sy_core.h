@@ -1,8 +1,6 @@
 #pragma once
 
 #include <gf/gf_module.h>
-#include <printf.h>
-#include <sscanf.h>
 #include <stddef.h>
 #include <types.h>
 
@@ -16,6 +14,7 @@ namespace Syringe {
         char AUTHOR[20];
         Version VERSION;
         Version SY_VERSION;
+        void (*PLUGIN_MAIN)();
     };
 } // namespace Syringe
 
@@ -61,21 +60,29 @@ namespace SyringeCore {
     public:
         InlineHook()
         {
-            // Create a stack frame, a branch
-            // to our code, and a branch back
-            instructions[0] = 0x9421FF80;
-            instructions[1] = 0x7C0802A6;
-            instructions[2] = 0x90010084;
-            instructions[3] = 0xBC610008;
-            instructions[4] = 0;
-            instructions[5] = 0x80010084;
-            instructions[6] = 0xB8610008;
-            instructions[7] = 0x7C0803A6;
-            instructions[8] = 0x38210080;
-            instructions[9] = 0;
+            // Create a stack frame, a branch to our code, and a branch back
+
+            instructions[0] = 0x9421FF70;  // stwu r1, -0x90(r1)
+            instructions[1] = 0x90010008;  // stw r0, 0x8(r1)
+            instructions[2] = 0xBC61000C;  // stmw r3, 0xC(r1)
+            instructions[3] = 0x7C0802A6;  // mflr r0
+            instructions[4] = 0x90010094;  // stw r0, 0x94(r1)
+            instructions[5] = 0;           // <-- branch to hook
+            instructions[6] = 0x80010008;  // lwz r0, 0x8(r1)
+            instructions[7] = 0x7C0803A6;  // mtlr r0
+            instructions[8] = 0x80010094;  // lwz r0, 0x94(r1)
+            instructions[9] = 0xB861000C;  // lmw r3, 0xC(r1)
+            instructions[10] = 0x38210090; // addi r1, r1, 0x90
+            instructions[11] = 0;          // <--- branch back to original
         }
-        u32 instructions[10];
+        u32 instructions[12];
     };
+
+    /**
+     * @brief Iterates over all loaded modules and attempts to apply registered hooks
+     *
+     */
+    void applyRelHooks();
 
     /**
      * @brief Initializes the Syringe core systems.

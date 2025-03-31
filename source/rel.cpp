@@ -10,7 +10,8 @@ namespace Syringe
         "Sandbox",
         "Sammi",
         Version("0.1.0"),
-        Version(SYRINGE_VERSION)};
+        Version(SYRINGE_VERSION),
+        Sandbox::Init};
 
     extern "C"
     {
@@ -31,8 +32,6 @@ namespace Syringe
         {
             (*ctor)();
         }
-
-        Sandbox::Init();
 
         return &META;
     }

@@ -1,19 +1,16 @@
 #include <os/OSError.h>
 #include <sy_core.h>
 
-namespace Sandbox {
-
-    bool initialized = false;
-
+namespace Sandbox
+{
     void helloWorld()
     {
         OSReport("Hello world.\n");
-        initialized = true;
     }
 
     void Init()
     {
-        SyringeCore::syInlineHook(0x800177B0, (void*)helloWorld);
+        SyringeCore::syInlineHook(0x800177B0, (void *)helloWorld);
     }
     void Destroy()
     {
